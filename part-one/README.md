@@ -21,6 +21,7 @@ only a single thread running and multiple ways with a multi-threaded approach to
 the completion of the tasks 
 
 ## To run the file (no output):
+Disclaimer: This will take a long time to run
 ```
 python3 presents.py
 ```
