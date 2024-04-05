@@ -29,7 +29,6 @@ The runtime for the final version was much faster than the fully unoptimized ver
 14 minutes -> 2-3 seconds
 
 ## To run the file (no output):
-Disclaimer: This will take a long time to run
 ```
 python3 presents.py
 ```
