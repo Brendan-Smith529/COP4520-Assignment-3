@@ -1,5 +1,7 @@
 import multiprocessing as mp, time
-from random import randint
+import queue
+
+from random import randint, shuffle
 
 from ConcurrentLinkedList import ConcurrentLinkedList
 
@@ -10,7 +12,11 @@ N_THREADS = 4
 linked_list = ConcurrentLinkedList()
 
 # Present bag
-present_bag = list(range(N_PRESENTS))
+present_bag_list = list(range(N_PRESENTS))
+shuffle(present_bag_list)
+
+present_bag = queue.Queue()
+map(present_bag.put, present_bag_list)
 
 # Actions
 def select_random(counter, lock):
@@ -27,16 +33,12 @@ def select_random(counter, lock):
             case 2:
                 check_for_tag(lock)
 
-def get_random_index():
-    return randint(0, len(present_bag) - 1)
-
 def take_present(lock):
-    index = get_random_index()
-
-    linked_list.append(present_bag[index])
-
     with lock:
-        present_bag.remove(present_bag[index])
+        if present_bag.qsize() > 0:
+            linked_list.append(present_bag.peek())
+
+            present_bag.popleft()
 
 def write_card(counter):
     linked_list.remove()
@@ -45,10 +47,10 @@ def write_card(counter):
         counter.value += 1
 
 def check_for_tag(lock):
-    with lock:
-        index = get_random_index()
+    index = randint(0, N_PRESENTS - 1)
 
-        linked_list.search(present_bag[index])
+    with lock:
+        linked_list.search(index)
 
 
 if __name__ == "__main__":
